@@ -125,6 +125,12 @@ class CurrencyCrisisModel:
         else:
             raise ValueError(f"Unsupported file format: {ext}")
 
+        df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
+
+        ohlcv_cols = {"date", "open", "high", "low", "close", "volume"}
+        if ohlcv_cols.issubset(set(df.columns)):
+            return self._analyze_ohlcv(df)
+
         column_aliases = {
             "exchange_rate_volatility": ["exchange_rate_vol", "volatility", "erv"],
             "inflation_rate": ["inflation", "inflation_rate_pct"],
@@ -168,6 +174,51 @@ class CurrencyCrisisModel:
         probabilities = self.predict_batch(df)
 
         results = df.copy()
+        results["crisis_probability"] = probabilities
+        results["risk_level"] = [self.get_risk_level(p)[0] for p in probabilities]
+
+        return results
+
+    def _analyze_ohlcv(self, df):
+        df = df.sort_values("date")
+
+        df["returns"] = df["close"].pct_change()
+        df["exchange_rate_volatility"] = df["returns"].rolling(20).std()
+
+        price_change = (
+            (df["close"] - df["close"].shift(20)) / df["close"].shift(20)
+        ) * 100
+        df["real_exchange_rate_change"] = price_change
+
+        df["high_low_vol"] = (df["high"] - df["low"]) / df["close"]
+        df["exchange_rate_volatility"] = df["high_low_vol"].rolling(20).mean()
+
+        df["volume_ma"] = df["volume"].rolling(20).mean()
+        df["volume_ratio"] = df["volume"] / df["volume_ma"]
+
+        df = df.dropna()
+
+        if len(df) == 0:
+            raise ValueError("Not enough data. Need at least 20 rows.")
+
+        df["inflation_rate"] = 3.0
+        df["interest_rate_spread"] = 2.5
+        df["current_account_balance_gdp"] = -2.0
+        df["foreign_reserves_months_imports"] = 8.0
+        df["external_debt_gdp"] = 50.0
+        df["debt_service_ratio"] = 15.0
+        df["m2_reserves_ratio"] = 0.8
+        df["trade_balance_gdp"] = -1.0
+
+        df["exchange_rate_volatility"] = df["exchange_rate_volatility"] * 10
+        df["real_exchange_rate_change"] = df["real_exchange_rate_change"].fillna(0)
+
+        analysis_df = df[self.feature_names].copy()
+        probabilities = self.predict_batch(analysis_df)
+
+        results = df[["date", "open", "high", "low", "close", "volume"]].copy()
+        results["exchange_rate_volatility"] = df["exchange_rate_volatility"]
+        results["real_exchange_rate_change"] = df["real_exchange_rate_change"]
         results["crisis_probability"] = probabilities
         results["risk_level"] = [self.get_risk_level(p)[0] for p in probabilities]
 
