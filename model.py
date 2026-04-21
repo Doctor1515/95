@@ -125,9 +125,44 @@ class CurrencyCrisisModel:
         else:
             raise ValueError(f"Unsupported file format: {ext}")
 
-        missing_cols = set(self.feature_names) - set(df.columns)
+        column_aliases = {
+            "exchange_rate_volatility": ["exchange_rate_vol", "volatility", "erv"],
+            "inflation_rate": ["inflation", "inflation_rate_pct"],
+            "interest_rate_spread": ["interest_spread", "rate_spread", "irs"],
+            "current_account_balance_gdp": ["current_account", "cab_gdp", "ca"],
+            "foreign_reserves_months_imports": [
+                "foreign_reserves",
+                "reserves_months",
+                "frm",
+            ],
+            "external_debt_gdp": ["external_debt", "debt_gdp", "ed"],
+            "debt_service_ratio": ["debt_service", "dsr"],
+            "m2_reserves_ratio": ["m2_reserves", "m2r"],
+            "real_exchange_rate_change": ["real_exchange_change", "rexch"],
+            "trade_balance_gdp": ["trade_balance", "tb_gdp"],
+        }
+
+        df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
+
+        col_mapping = {}
+        for expected in self.feature_names:
+            if expected in df.columns:
+                col_mapping[expected] = expected
+            else:
+                for alias in column_aliases.get(expected, []):
+                    if alias in df.columns:
+                        col_mapping[expected] = alias
+                        break
+
+        available_cols = set(col_mapping.keys())
+        missing_cols = set(self.feature_names) - available_cols
         if missing_cols:
-            raise ValueError(f"Missing columns: {missing_cols}")
+            raise ValueError(
+                f"Missing columns: {missing_cols}. Available in your file: {list(df.columns)}"
+            )
+
+        df = df[[col_mapping[c] for c in self.feature_names]]
+        df.columns = self.feature_names
 
         df = df[self.feature_names]
         probabilities = self.predict_batch(df)
