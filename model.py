@@ -121,7 +121,10 @@ class CurrencyCrisisModel:
         if ext in ["csv"]:
             df = pd.read_csv(file_path)
         elif ext in ["xlsx", "xls"]:
-            df = pd.read_excel(file_path)
+            try:
+                df = pd.read_excel(file_path, sheet_name=0)
+            except Exception as e:
+                df = pd.read_excel(file_path, sheet_name="Sheet1")
         else:
             raise ValueError(f"Unsupported file format: {ext}")
 

@@ -187,7 +187,7 @@ def main():
         uploaded_file = st.file_uploader(
             "Choose a file (CSV or Excel)",
             type=["csv", "xlsx", "xls"],
-            help="File must contain columns: exchange_rate_volatility, inflation_rate, interest_rate_spread, current_account_balance_gdp, foreign_reserves_months_imports, external_debt_gdp, debt_service_ratio, m2_reserves_ratio, real_exchange_rate_change, trade_balance_gdp",
+            help="Upload OHLCV forex data (Date, Open, High, Low, Close, Volume) OR economic indicator data",
         )
 
         if uploaded_file is not None:
