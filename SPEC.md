@@ -1,80 +1,69 @@
-# Currency Exchange Predictions AI Agent
+# Currency Crisis Prediction AI Agent
 
 ## Project Overview
-- **Project Name**: CurrencyX AI Agent
-- **Type**: Web Application (AI/ML + Chatbot)
-- **Core Functionality**: AI-powered currency exchange rate predictions with interactive chatbot interface
-- **Target Users**: Traders, financial analysts, and anyone interested in currency exchange predictions
+
+- **Project Name**: Currency Crisis Prediction Agent
+- **Type**: AI-powered web application with ML prediction and chatbot
+- **Core Functionality**: Predicts currency crises using economic indicators, provides conversational interface for analysis, deployable on Streamlit
+- **Target Users**: Financial analysts, economists, policymakers, traders
+
+## Technical Stack
+
+- **Language**: Python 3.9+
+- **ML Framework**: scikit-learn, XGBoost, pandas
+- **Chatbot**: LlamaIndex (RAG-based conversation)
+- **UI**: Streamlit
+- **Version Control**: Git/GitHub
 
 ## Functionality Specification
 
-### Core Features
+### 1. Currency Crisis Prediction Model
+- Uses historical currency data with indicators:
+  - Exchange rate volatility
+  - Inflation rate
+  - Interest rate spreads
+  - Current account balance
+  - Foreign reserves
+  - External debt
+- Binary classification: crisis vs stable
+- Ensemble model (Random Forest + XGBoost)
 
-1. **Currency Prediction Engine**
-   - Support for major currency pairs: EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD
-   - Uses historical data patterns and machine learning (Random Forest + Linear Regression ensemble)
-   - Prediction horizons: 1 day, 7 days, 30 days
-   - Technical indicators: Moving averages, RSI, MACD
+### 2. Chatbot Interface
+- RAG-based conversational AI
+- Context-aware responses about:
+  - Currency crisis indicators
+  - Risk assessment
+  - Historical crises analysis
+  - Prevention strategies
+- Integrates prediction model insights
 
-2. **Interactive Chatbot**
-   - Natural language queries about currency rates
-   - Ask for predictions and analysis
-   - Market sentiment queries
-   - Conversational interface for non-technical users
+### 3. Streamlit Dashboard
+- **Tab 1: Prediction** - Input economic indicators, get crisis probability
+- **Tab 2: Chat** - Interactive chatbot
+- **Tab 3: Dashboard** - Visualize historical data and trends
 
-3. **Dashboard UI**
-   - Real-time exchange rate display
-   - Historical charts with predictions
-   - Signal indicators (Buy/Sell/Hold)
-   - Portfolio overview section
+### 4. GitHub Integration
+- Git repository initialization
+- Proper commit history tracking
+- README and documentation
 
-### User Interactions
-- Select currency pair from dropdown
-- View current rate and predicted changes
-- Chat with AI assistant for insights
-- View historical charts with predictions overlay
+## File Structure
 
-### Data Handling
-- Generate synthetic historical data for demo (can be replaced with real API)
-- Store predictions in session state
-- Cache model results for performance
-
-## UI/UX Specification
-
-### Layout Structure
-- **Header**: Logo, title, navigation
-- **Main Content**: 
-  - Left sidebar: Currency pair selector, prediction controls
-  - Center: Charts and visualizations
-  - Right: Chatbot panel
-- **Footer**: Disclaimer and data sources
-
-### Visual Design
-- **Color Palette**:
-  - Primary: #1E3A5F (Deep Navy)
-  - Secondary: #2E7D32 (Forest Green - for positive)
-  - Accent: #FF6B35 (Coral Orange - for alerts)
-  - Background: #0D1B2A (Dark Blue)
-  - Surface: #1B2838 (Slate)
-  - Text: #E0E6ED (Light Gray)
-- **Typography**:
-  - Headings: Roboto Bold
-  - Body: Roboto Regular
-  - Monospace for numbers: JetBrains Mono
-- **Spacing**: 16px base unit, 24px section gaps
-- **Effects**: Subtle shadows on cards, smooth transitions
-
-### Components
-- Currency pair selector (dropdown)
-- Prediction cards with confidence intervals
-- Line charts with prediction overlay
-- Chat message bubbles (user vs AI)
-- Signal indicators (colored badges)
+```
+CURRENCY CRISIS PREDICTION/
+├── app.py                 # Streamlit app
+├── model.py              # ML prediction model
+├── chatbot.py            # LlamaIndex chatbot
+├── data/
+│   └── sample_data.csv   # Sample currency data
+├── requirements.txt      # Dependencies
+└── .gitignore           # Git ignore
+```
 
 ## Acceptance Criteria
-1. App loads without errors
-2. Currency pairs can be selected and predictions displayed
-3. Charts render correctly with historical and predicted data
-4. Chatbot responds to queries about currencies
-5. Responsive layout works on desktop
-6. No critical errors in console
+
+1. Streamlit app runs without errors
+2. Prediction model accepts input and outputs crisis probability
+3. Chatbot responds to currency crisis queries
+4. Dashboard displays data visualizations
+5. GitHub repository initialized with proper structure
